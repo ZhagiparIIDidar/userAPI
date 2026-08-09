@@ -1,24 +1,33 @@
 # app/core/security.py
 from datetime import datetime, timedelta, timezone
-from pathlib import Path
 from typing import Optional, Literal
 import uuid
 
 from jose import jwt, JWTError
-from passlib.context import CryptContext
+import bcrypt
 
-from app.core.config import pwd_context, settings
+from app.core.config import settings
 
 
 # ---------------------------------------------------------------------------
 # Passwords
 # ---------------------------------------------------------------------------
 def hash_password(password: str) -> str:
-    return pwd_context.hash(password)
+    password_bytes = password.encode("utf-8")
+
+    if len(password_bytes) > 72:
+        raise ValueError("Password is too long (max 72 bytes)")
+
+    salt = bcrypt.gensalt()
+    hashed = bcrypt.hashpw(password_bytes, salt)
+    return hashed.decode("utf-8")
 
 
 def verify_password(plain: str, hashed: str) -> bool:
-    return pwd_context.verify(plain, hashed)
+    try:
+        return bcrypt.checkpw(plain.encode("utf-8"), hashed.encode("utf-8"))
+    except ValueError:
+        return False
 
 
 # ---------------------------------------------------------------------------

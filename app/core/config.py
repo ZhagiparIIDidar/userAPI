@@ -1,6 +1,5 @@
 from pathlib import Path
 
-from passlib.context import CryptContext
 from pydantic import BaseModel
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -30,16 +29,6 @@ class AuthJWT(BaseModel):
     @property
     def PUBLIC_KEY(self) -> str:
         return self.PUBLIC_KEY_PATH.read_text()
-
-
-# ---------------------------------------------------------------------------
-# Password Hashing
-# ---------------------------------------------------------------------------
-
-pwd_context = CryptContext(
-    schemes=["bcrypt"],
-    deprecated="auto",
-)
 
 
 # ---------------------------------------------------------------------------
