@@ -54,6 +54,10 @@ class Settings(BaseSettings):
     DB_PASS: str
     DB_NAME: str
 
+    DB_ECHO: bool = False  # логировать SQL-запросы (только для дебага)
+    DB_POOL_SIZE: int = 10
+    DB_MAX_OVERFLOW: int = 20
+
     auth_jwt: AuthJWT = AuthJWT()
 
     model_config = SettingsConfigDict(
@@ -66,6 +70,15 @@ class Settings(BaseSettings):
     def DATABASE_URL_asyncpg(self) -> str:
         return (
             f"postgresql+asyncpg://"
+            f"{self.DB_USER}:{self.DB_PASS}@"
+            f"{self.DB_HOST}:{self.DB_PORT}/"
+            f"{self.DB_NAME}"
+        )
+
+    @property
+    def DATABASE_URL_psycopg2(self) -> str:
+        return (
+            f"postgresql+psycopg2://"
             f"{self.DB_USER}:{self.DB_PASS}@"
             f"{self.DB_HOST}:{self.DB_PORT}/"
             f"{self.DB_NAME}"
