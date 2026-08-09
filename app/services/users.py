@@ -7,6 +7,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.user import User
 from app.schemas.user import UserCreate, UserUpdate
+from app.core.logging import get_logger
+
+logger = get_logger(__name__)
 
 
 # ---------------------------------------------------------------------------
@@ -91,6 +94,11 @@ async def create_user(
     db.add(user)
     await db.flush()  # получить user.id до commit
     await db.refresh(user)
+
+    logger.debug(
+        "User created in DB", extra={"user_id": str(user.id), "email": user.email}
+    )
+
     return user
 
 
@@ -129,6 +137,11 @@ async def bump_token_version(db: AsyncSession, user_id: str | uuid.UUID) -> User
     if user is None:
         return None
     user.token_version += 1
+
+    logger.info(
+        "Token version bumped (sessions revoked)", extra={"user_id": str(user.id)}
+    )
+
     await db.flush()
     return user
 
@@ -150,5 +163,8 @@ async def set_active_status(db: AsyncSession, user: User, is_active: bool) -> Us
 # Delete
 # ---------------------------------------------------------------------------
 async def delete_user(db: AsyncSession, user: User) -> None:
+
+    logger.warning("User deleted", extra={"user_id": str(user.id)})
+
     await db.delete(user)
     await db.flush()

@@ -10,6 +10,9 @@ from app.core.security import create_access_token
 from app.models.user import User
 from app.schemas.user import UserAdminOut, UserListOut, UserRoleUpdate
 from app.services import users as users_service
+from app.core.logging import get_logger
+
+logger = get_logger(__name__)
 
 router = APIRouter(
     prefix="/users",
@@ -60,6 +63,15 @@ async def update_user_roles(
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
 
+    logger.info(
+        "User role updated by admin",
+        extra={
+            "admin_id": str(admin.id),
+            "target_user_id": str(user.id),
+            "new_role": data.role,
+        },
+    )
+
     return await users_service.update_user_role(db, user, data.role)
 
 
@@ -90,6 +102,10 @@ async def impersonate_user(
     #     actor_id=admin.id,
     #     target_id=target.id,
     # )
+    logger.warning(  # warning, не info — это чувствительное действие, должно быть заметно в логах
+        "Admin impersonated user",
+        extra={"admin_id": str(admin.id), "target_user_id": str(target.id)},
+    )
 
     access_token = create_access_token(
         str(target.id),
@@ -97,6 +113,11 @@ async def impersonate_user(
             "role": target.role,
             "impersonated_by": str(admin.id),  # обязательно помечаем токен как "чужой"
         },
+    )
+
+    logger.warning(  # warning, не info — это чувствительное действие, должно быть заметно в логах
+        "Admin impersonated user",
+        extra={"admin_id": str(admin.id), "target_user_id": str(target.id)},
     )
 
     return {

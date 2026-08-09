@@ -58,6 +58,9 @@ class Settings(BaseSettings):
     DB_POOL_SIZE: int = 10
     DB_MAX_OVERFLOW: int = 20
 
+    LOG_LEVEL: str = "INFO"
+    LOG_FORMAT: str = "text"
+
     auth_jwt: AuthJWT = AuthJWT()
 
     model_config = SettingsConfigDict(
