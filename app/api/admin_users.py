@@ -102,10 +102,6 @@ async def impersonate_user(
     #     actor_id=admin.id,
     #     target_id=target.id,
     # )
-    logger.warning(  # warning, не info — это чувствительное действие, должно быть заметно в логах
-        "Admin impersonated user",
-        extra={"admin_id": str(admin.id), "target_user_id": str(target.id)},
-    )
 
     access_token = create_access_token(
         str(target.id),

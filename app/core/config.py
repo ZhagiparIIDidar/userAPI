@@ -3,7 +3,7 @@ from pathlib import Path
 from pydantic import BaseModel
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-BASE_DIR = Path(__file__).resolve().parent
+BASE_DIR = Path(__file__).resolve().parents[2]
 
 
 # ---------------------------------------------------------------------------
@@ -14,8 +14,8 @@ BASE_DIR = Path(__file__).resolve().parent
 class AuthJWT(BaseModel):
     ALGORITHM: str = "RS256"
 
-    PRIVATE_KEY_PATH: Path = BASE_DIR / "keys" / "private.pem"
-    PUBLIC_KEY_PATH: Path = BASE_DIR / "keys" / "public.pem"
+    PRIVATE_KEY_PATH: Path = BASE_DIR / "certs" / "private_key.pem"
+    PUBLIC_KEY_PATH: Path = BASE_DIR / "certs" / "public_key.pem"
 
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 15
     REFRESH_TOKEN_EXPIRE_DAYS: int = 30

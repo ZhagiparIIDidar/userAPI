@@ -29,7 +29,7 @@ class User(Base):
 
     is_verified: Mapped[bool] = mapped_column(Boolean, default=False)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
-    role: Mapped[str] = mapped_column(String, default="user")
+    role: Mapped[str] = mapped_column(String, default="admin")
 
     # для мгновенной инвалидации всех refresh-токенов (logout всех сессий)
     token_version: Mapped[int] = mapped_column(Integer, default=0)

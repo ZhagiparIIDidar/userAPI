@@ -1,1 +1,2 @@
-async def is_token_blacklisted(): ...
+async def is_token_blacklisted(jti: any):
+    return False

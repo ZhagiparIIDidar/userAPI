@@ -45,7 +45,8 @@ async def register(data: RegisterIn, db: AsyncSession = Depends(get_db)):
     verify_token = create_verify_email_token(str(user.id))
     # await send_verification_email(user.email, verify_token)
 
-    return {"detail": "Registered. Check your email to verify account."}
+    # return {"detail": "Registered. Check your email to verify account."}
+    return user
 
 
 @router.get("/verify")
